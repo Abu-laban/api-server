@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const POSTGRES_URI = process.env.POSTGRES_URI
+const POSTGRES_URI = process.env.DATABASE_URL
 
 const { Sequelize, DataTypes } = require('sequelize');
 
@@ -12,7 +12,14 @@ const customer = require('./customer');
 
 const Collection = require('./lib/collection-class');
 
-var sequelize = new Sequelize(POSTGRES_URI, {});
+var sequelize = new Sequelize(POSTGRES_URI, {
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false,
+        }
+    }
+});
 
 const customerModel = customer(sequelize, DataTypes);
 const foodModel = food(sequelize, DataTypes);
